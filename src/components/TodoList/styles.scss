@@ -1,0 +1,12 @@
+$black: #0000;
+$gray: #222222;
+$white: #ffffff;
+
+.container{
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 40%;
+  border: solid 1px $white;
+  border-radius: 10px;
+}

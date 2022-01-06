@@ -2,10 +2,12 @@ import React from 'react'
 
 import TodoList from './components/TodoList'
 
+import './App.scss'
+
 
 function App() {
   return (
-    <div className="App" style={{background: 'pink'}}>
+    <div className="App">
       <TodoList />
     </div>
   );

@@ -8,6 +8,7 @@ import './styles.scss'
 const TodoList = () => {
   const [todoInput, setTodoInput] = useState('')
   const [todoList, setTodoList] = useState([])
+  const todoInputRef = useRef()
 
   const onCreateTodo = e => {
     const todoInput = e.target.value
@@ -31,6 +32,13 @@ const TodoList = () => {
     setTodoList(newTodoList)
   }
 
+  const onEnterNewTodo = (e) => {
+    if(e.keyCode === 13){
+      e.preventDefault()
+      todoInputRef.current.focus()
+    }
+  }
+
   useEffect(() => {
     if (todoList.length > 0) {
       todoList[todoList.length - 1].ref.current.focus()
@@ -46,8 +54,8 @@ const TodoList = () => {
             <input
               onChange={e => onChangeInputItems(e.target.value, todo.id)}
               value={todo.value}
-              // defaultValue={todo.value}
               ref={todo.ref}
+              onKeyDown={onEnterNewTodo}
             />
           </div>
         ))}
@@ -58,6 +66,7 @@ const TodoList = () => {
             placeholder="Mục danh sách"
             onChange={onCreateTodo}
             value={todoInput}
+            ref={todoInputRef}
           />
         </form>
       </div>

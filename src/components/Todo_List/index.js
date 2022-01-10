@@ -57,6 +57,7 @@ const TodoList = () => {
     }
   }, [todoList])
 
+  console.log('abc')
   console.log(todoList)
 
   return (

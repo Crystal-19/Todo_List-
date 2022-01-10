@@ -5,14 +5,26 @@ import {v4} from 'uuid'
 
 import './styles.scss'
 
+const usePrevious = (value) => {
+  const ref = useRef()
+
+  useEffect(() => {
+    ref.current = value
+  }, [value])
+
+  return ref.current
+}
+
 const TodoList = () => {
   const [todoInput, setTodoInput] = useState('')
   const [todoList, setTodoList] = useState([])
   const [todoCompleted, setTodoCompleted] = useState([])
-  const [todoListLength, setTodoListLength] = useState(todoList.length)
   const [headerCompleted, setHeaderCompleted] = useState(false)
   const [numberCompleted, setNumberCompleted] = useState(0)
   const todoInputRef = useRef()
+
+  const todoListLength = todoList.length
+  const preTodoListLength = usePrevious(todoListLength)
 
   const onCreateTodo = e => {
     const todoInput = e.target.value
@@ -24,8 +36,6 @@ const TodoList = () => {
         ...prev,
         {id: v4(), value: e.target.value, ref: newTodoRef},
       ])
-
-      setTodoListLength(todoListLength + 1)
 
       setTodoInput('')
     }
@@ -74,10 +84,10 @@ const TodoList = () => {
   }
 
   useEffect(() => {
-    if (todoList.length > 0) {
-      todoList[todoList.length - 1].ref.current.focus()
+    if (todoListLength > 0 && todoListLength > preTodoListLength) {
+      todoList[todoListLength - 1].ref.current.focus()
     }
-  }, [todoListLength])
+  }, [todoListLength, preTodoListLength])
 
   return (
     <div className="container">
@@ -113,8 +123,7 @@ const TodoList = () => {
         </form>
         <div className="completed-item-container">
           <header className={headerCompleted ? 'header-show' : 'header-hide'}>
-            {' '}
-            {numberCompleted} mục đã hoàn tất{' '}
+            {numberCompleted} mục đã hoàn tất
           </header>
           {todoCompleted.map(td => (
             <div className="completed-container" key={td.id}>

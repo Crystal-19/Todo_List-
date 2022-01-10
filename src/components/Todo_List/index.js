@@ -8,6 +8,7 @@ import './styles.scss'
 const TodoList = () => {
   const [todoInput, setTodoInput] = useState('')
   const [todoList, setTodoList] = useState([])
+  const [todoCompleted, setTodoCompleted] = useState([])
   const todoInputRef = useRef()
 
   const onCreateTodo = e => {
@@ -43,11 +44,20 @@ const TodoList = () => {
     setTodoList(todoList.filter(td => td.id !== id))
   }
 
+  const handleCheck = (value, id) => {
+    setTodoCompleted(prev => [...prev, todoList.filter(td => td.id===id)])
+    const tdCompleted = todoCompleted.find(item => item.id === id)
+    tdCompleted.value = value
+    setTodoList(todoList.filter(td => td.id !== id))
+  }
+
   useEffect(() => {
     if (todoList.length > 0) {
       todoList[todoList.length - 1].ref.current.focus()
     }
   }, [todoList])
+
+  console.log(todoList)
 
   return (
     <div className="container">
@@ -55,13 +65,19 @@ const TodoList = () => {
         <header className="header">Tiêu Đề</header>
         {todoList.map(todo => (
           <div key={todo.id} className="input-item-container">
-            <input
-              onChange={e => onChangeInputItems(e.target.value, todo.id)}
-              value={todo.value}
-              ref={todo.ref}
-              onKeyDown={onEnterNewTodo}
-              className="input-item"
-            />
+            <div className="input-container">
+              <input 
+              type="checkbox" 
+              onChange={() => handleCheck(todo.value, todo.id)}
+              />
+              <input
+                onChange={e => onChangeInputItems(e.target.value, todo.id)}
+                value={todo.value}
+                ref={todo.ref}
+                onKeyDown={onEnterNewTodo}
+                className="input-item"
+              />
+            </div>
             <Icon
               className="x icon"
               onClick={() => onDeleteInputItem(todo.id)}
@@ -78,6 +94,18 @@ const TodoList = () => {
             ref={todoInputRef}
           />
         </form>
+        <div className='completed-item-container'>
+          <header className='completed-title'> mục đã hoàn tất </header>
+          {todoCompleted.map(td => (
+            <div className='completed-container' key={td.id}>
+              <input type='checkbox' />
+              <input 
+                className='todo-compeleted' 
+                value={td.value} 
+              />
+            </div>
+          ))}
+        </div>
       </div>
     </div>
   )

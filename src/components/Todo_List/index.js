@@ -23,7 +23,7 @@ const TodoList = () => {
       setTodoInput('')
     }
   }
-  
+
   const onChangeInputItems = (value, id) => {
     const todoUpdate = todoList.find(item => item.id === id)
     todoUpdate.value = value
@@ -32,11 +32,15 @@ const TodoList = () => {
     setTodoList(newTodoList)
   }
 
-  const onEnterNewTodo = (e) => {
-    if(e.keyCode === 13){
+  const onEnterNewTodo = e => {
+    if (e.keyCode === 13) {
       e.preventDefault()
       todoInputRef.current.focus()
     }
+  }
+
+  const onDeleteInputItem = id => {
+    setTodoList(todoList.filter(td => td.id !== id))
   }
 
   useEffect(() => {
@@ -50,12 +54,17 @@ const TodoList = () => {
       <div className="todo-container">
         <header className="header">Tiêu Đề</header>
         {todoList.map(todo => (
-          <div key={todo.id}>
+          <div key={todo.id} className="input-item-container">
             <input
               onChange={e => onChangeInputItems(e.target.value, todo.id)}
               value={todo.value}
               ref={todo.ref}
               onKeyDown={onEnterNewTodo}
+              className="input-item"
+            />
+            <Icon
+              className="x icon"
+              onClick={() => onDeleteInputItem(todo.id)}
             />
           </div>
         ))}

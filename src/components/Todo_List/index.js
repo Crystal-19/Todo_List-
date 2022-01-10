@@ -9,6 +9,7 @@ const TodoList = () => {
   const [todoInput, setTodoInput] = useState('')
   const [todoList, setTodoList] = useState([])
   const [todoCompleted, setTodoCompleted] = useState([])
+  const [todoListLength, setTodoListLength] = useState(todoList.length)
   const todoInputRef = useRef()
 
   const onCreateTodo = e => {
@@ -21,6 +22,9 @@ const TodoList = () => {
         ...prev,
         {id: v4(), value: e.target.value, ref: newTodoRef},
       ])
+
+      setTodoListLength(todoListLength + 1)
+
       setTodoInput('')
     }
   }
@@ -44,7 +48,7 @@ const TodoList = () => {
     setTodoList(todoList.filter(td => td.id !== id))
   }
 
-  const handleCheck = (id) => {
+  const handleCheck = id => {
     const itemCompleted = todoList.find(td => td.id === id)
     setTodoCompleted(prev => [...prev, itemCompleted])
 
@@ -55,7 +59,7 @@ const TodoList = () => {
     if (todoList.length > 0) {
       todoList[todoList.length - 1].ref.current.focus()
     }
-  }, [todoList])
+  }, [todoListLength])
 
   return (
     <div className="container">
@@ -64,10 +68,7 @@ const TodoList = () => {
         {todoList.map(todo => (
           <div key={todo.id} className="input-item-container">
             <div className="input-container">
-              <input 
-              type="checkbox" 
-              onChange={() => handleCheck(todo.id)}
-              />
+              <input type="checkbox" onChange={() => handleCheck(todo.id)} />
               <input
                 onChange={e => onChangeInputItems(e.target.value, todo.id)}
                 value={todo.value}
@@ -92,19 +93,16 @@ const TodoList = () => {
             ref={todoInputRef}
           />
         </form>
-        <div className='completed-item-container'>
-          <header className='completed-title'> mục đã hoàn tất </header>
+        <div className="completed-item-container">
+          <header className="completed-title"> mục đã hoàn tất </header>
           {todoCompleted.map(td => (
-            <div className='completed-container' key={td.id}>
-              <input 
-                type='checkbox' 
-                checked='checked'
-                className='input-checked'
-                />
-              <input 
-                className='todo-completed' 
-                value={td.value} 
+            <div className="completed-container" key={td.id}>
+              <input
+                type="checkbox"
+                checked="checked"
+                className="input-checked"
               />
+              <input className="todo-completed" value={td.value} />
             </div>
           ))}
         </div>

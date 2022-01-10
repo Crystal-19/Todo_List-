@@ -44,10 +44,10 @@ const TodoList = () => {
     setTodoList(todoList.filter(td => td.id !== id))
   }
 
-  const handleCheck = (value, id) => {
-    setTodoCompleted(prev => [...prev, todoList.filter(td => td.id===id)])
-    const tdCompleted = todoCompleted.find(item => item.id === id)
-    tdCompleted.value = value
+  const handleCheck = (id) => {
+    const itemCompleted = todoList.find(td => td.id === id)
+    setTodoCompleted(prev => [...prev, itemCompleted])
+
     setTodoList(todoList.filter(td => td.id !== id))
   }
 
@@ -56,9 +56,6 @@ const TodoList = () => {
       todoList[todoList.length - 1].ref.current.focus()
     }
   }, [todoList])
-
-  console.log('abc')
-  console.log(todoList)
 
   return (
     <div className="container">
@@ -69,7 +66,7 @@ const TodoList = () => {
             <div className="input-container">
               <input 
               type="checkbox" 
-              onChange={() => handleCheck(todo.value, todo.id)}
+              onChange={() => handleCheck(todo.id)}
               />
               <input
                 onChange={e => onChangeInputItems(e.target.value, todo.id)}
@@ -99,9 +96,13 @@ const TodoList = () => {
           <header className='completed-title'> mục đã hoàn tất </header>
           {todoCompleted.map(td => (
             <div className='completed-container' key={td.id}>
-              <input type='checkbox' />
               <input 
-                className='todo-compeleted' 
+                type='checkbox' 
+                checked='checked'
+                className='input-checked'
+                />
+              <input 
+                className='todo-completed' 
                 value={td.value} 
               />
             </div>

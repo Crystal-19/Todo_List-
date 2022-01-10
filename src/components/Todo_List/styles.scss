@@ -19,17 +19,17 @@
       @include flex(row, center, space-between);
       width: 100%;
 
-      .input-container{
-          @include flex(row, center, flex-start);
+      .input-container {
+        @include flex(row, center, flex-start);
+        padding: 10px;
 
-          .input-item {
-            border: none;
-            background-color: transparent;
-            outline: none;
-            padding: 10px;
-          }
+        .input-item {
+          border: none;
+          background-color: transparent;
+          outline: none;
+          padding: 10px;
+        }
       }
-      
     }
 
     .form {
@@ -43,23 +43,22 @@
         outline: none;
       }
     }
-  }
 
-  .completed-item-container{
-      .completed-container{
+    .completed-item-container {
+      padding: 10px;
+
+      .completed-container {
+        @include flex(row, center, center);
         opacity: 0.7;
-        text-decoration: line-through;  
-        width: 100%;
-        border: none;
-        outline: none;
 
-        .todo-completed{
-            opacity: 0.7;
-        text-decoration: line-through;  
-        width: 100%;
-        border: none;
-        outline: none;
+        .todo-completed {
+          text-decoration: line-through;
+          width: 100%;
+          border: none;
+          outline: none;
+          background-color: transparent;
         }
       }
+    }
   }
 }

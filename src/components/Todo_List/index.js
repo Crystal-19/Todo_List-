@@ -60,6 +60,19 @@ const TodoList = () => {
     setTodoList(todoList.filter(td => td.id !== id))
   }
 
+  const handleUncheck = id => {
+    const itemUnchecked = todoCompleted.find(td => td.id === id)
+    setTodoList(prev => [...prev, itemUnchecked])
+
+    setNumberCompleted(numberCompleted - 1)
+
+    if (numberCompleted === 1) {
+      setHeaderCompleted(false)
+    }
+
+    setTodoCompleted(todoCompleted.filter(td => td.id !== id))
+  }
+
   useEffect(() => {
     if (todoList.length > 0) {
       todoList[todoList.length - 1].ref.current.focus()
@@ -109,6 +122,7 @@ const TodoList = () => {
                 type="checkbox"
                 checked="checked"
                 className="input-checked"
+                onChange={() => handleUncheck(td.id)}
               />
               <input className="todo-completed" value={td.value} />
             </div>

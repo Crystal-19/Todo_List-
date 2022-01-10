@@ -47,6 +47,14 @@
     .completed-item-container {
       padding: 10px;
 
+      .header-show{
+        display: block;
+      }
+
+      .header-hide{
+        display: none;
+      }
+
       .completed-container {
         @include flex(row, center, center);
         opacity: 0.7;

@@ -10,6 +10,8 @@ const TodoList = () => {
   const [todoList, setTodoList] = useState([])
   const [todoCompleted, setTodoCompleted] = useState([])
   const [todoListLength, setTodoListLength] = useState(todoList.length)
+  const [headerCompleted, setHeaderCompleted] = useState(false)
+  const [numberCompleted, setNumberCompleted] = useState(0)
   const todoInputRef = useRef()
 
   const onCreateTodo = e => {
@@ -51,6 +53,9 @@ const TodoList = () => {
   const handleCheck = id => {
     const itemCompleted = todoList.find(td => td.id === id)
     setTodoCompleted(prev => [...prev, itemCompleted])
+
+    setHeaderCompleted(true)
+    setNumberCompleted(numberCompleted + 1)
 
     setTodoList(todoList.filter(td => td.id !== id))
   }
@@ -94,7 +99,10 @@ const TodoList = () => {
           />
         </form>
         <div className="completed-item-container">
-          <header className="completed-title"> mục đã hoàn tất </header>
+          <header className={headerCompleted ? 'header-show' : 'header-hide'}>
+            {' '}
+            {numberCompleted} mục đã hoàn tất{' '}
+          </header>
           {todoCompleted.map(td => (
             <div className="completed-container" key={td.id}>
               <input

@@ -5,7 +5,7 @@ import {v4} from 'uuid'
 
 import './styles.scss'
 
-const usePrevious = (value) => {
+const usePrevious = value => {
   const ref = useRef()
 
   useEffect(() => {
@@ -48,11 +48,21 @@ const TodoList = () => {
 
     setTodoList(newTodoList)
   }
-
-  const onEnterNewTodo = e => {
+  const onEnterNewTodo = (e, index) => {
+    const newTodoRef = React.createRef()
     if (e.keyCode === 13) {
-      e.preventDefault()
-      todoInputRef.current.focus()
+      if (index === todoListLength - 1) {
+        e.preventDefault()
+        todoInputRef.current.focus()
+      } else {
+        const startArr = todoList.slice(0, index + 1)
+        const endArr = todoList.slice(index + 1)
+        const newInput = {id: v4(), value: '', ref: newTodoRef}
+        const updateTodoList = [...startArr, newInput, ...endArr]
+        setTodoList(updateTodoList)
+
+        newInput.ref.current && newInput.ref.current.focus()
+      }
     }
   }
 
@@ -93,7 +103,7 @@ const TodoList = () => {
     <div className="container">
       <div className="todo-container">
         <header className="header">Tiêu Đề</header>
-        {todoList.map(todo => (
+        {todoList.map((todo, index) => (
           <div key={todo.id} className="input-item-container">
             <div className="input-container">
               <input type="checkbox" onChange={() => handleCheck(todo.id)} />
@@ -101,7 +111,7 @@ const TodoList = () => {
                 onChange={e => onChangeInputItems(e.target.value, todo.id)}
                 value={todo.value}
                 ref={todo.ref}
-                onKeyDown={onEnterNewTodo}
+                onKeyDown={e => onEnterNewTodo(e, index)}
                 className="input-item"
               />
             </div>

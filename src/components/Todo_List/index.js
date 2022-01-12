@@ -32,10 +32,8 @@ const TodoList = () => {
 
     if (todoInput.length === 1) {
       const newTodoRef = React.createRef()
-      setTodoList(prev => [
-        ...prev,
-        {id: v4(), value: e.target.value, ref: newTodoRef},
-      ])
+      const newTodoItem = {id: v4(), value: e.target.value, ref: newTodoRef}
+      setTodoList(prev => [...prev, newTodoItem])
 
       setTodoInput('')
     }
@@ -48,6 +46,7 @@ const TodoList = () => {
 
     setTodoList(newTodoList)
   }
+
   const onEnterNewTodo = (e, index) => {
     const newTodoRef = React.createRef()
     if (e.keyCode === 13) {
@@ -60,8 +59,6 @@ const TodoList = () => {
         const newInput = {id: v4(), value: '', ref: newTodoRef}
         const updateTodoList = [...startArr, newInput, ...endArr]
         setTodoList(updateTodoList)
-
-        newInput.ref.current && newInput.ref.current.focus()
       }
     }
   }
@@ -85,7 +82,6 @@ const TodoList = () => {
     setTodoList(prev => [...prev, itemUnchecked])
 
     setNumberCompleted(numberCompleted - 1)
-
     if (numberCompleted === 1) {
       setHeaderCompleted(false)
     }
@@ -96,6 +92,16 @@ const TodoList = () => {
   useEffect(() => {
     if (todoListLength > 0 && todoListLength > preTodoListLength) {
       todoList[todoListLength - 1].ref.current.focus()
+
+      todoList.forEach((td, index) => {
+        if (td.value === '') {
+          td.ref.current.focus()
+          td.value=' '
+        }
+        if (todoList[todoListLength - 1] === index) {
+          todoInput.current.focus()
+        }
+      })
     }
   }, [todoListLength, preTodoListLength])
 

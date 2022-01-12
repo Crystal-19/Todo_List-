@@ -23,6 +23,8 @@ const TodoList = () => {
   const [numberCompleted, setNumberCompleted] = useState(0)
   const todoInputRef = useRef()
 
+  const preTodoList = usePrevious(todoList)
+
   const todoListLength = todoList.length
   const preTodoListLength = usePrevious(todoListLength)
 
@@ -33,6 +35,7 @@ const TodoList = () => {
     if (todoInput.length === 1) {
       const newTodoRef = React.createRef()
       const newTodoItem = {id: v4(), value: e.target.value, ref: newTodoRef}
+      // todoList.push({id: v4(), value: e.target.value, ref: newTodoRef})
       setTodoList(prev => [...prev, newTodoItem])
 
       setTodoInput('')
@@ -93,15 +96,8 @@ const TodoList = () => {
     if (todoListLength > 0 && todoListLength > preTodoListLength) {
       todoList[todoListLength - 1].ref.current.focus()
 
-      todoList.forEach((td, index) => {
-        if (td.value === '') {
-          td.ref.current.focus()
-          td.value=' '
-        }
-        if (todoList[todoListLength - 1] === index) {
-          todoInput.current.focus()
-        }
-      })
+      const itemFind= todoList.find((td, index) => todoList[index] !== preTodoList[index])
+      itemFind.ref.current.focus()
     }
   }, [todoListLength, preTodoListLength])
 

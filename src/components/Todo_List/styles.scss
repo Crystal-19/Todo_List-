@@ -19,9 +19,13 @@
       @include flex(row, center, space-between);
       width: 100%;
 
+     
+
       .input-container {
         @include flex(row, center, flex-start);
         padding: 10px;
+        // width: 90%;
+
 
         .input-item {
           border: none;
@@ -29,7 +33,20 @@
           outline: none;
           padding: 10px;
         }
+
+        // &:hover ~ .icon{
+        //   display: block;
+        // }
       }
+
+      // .icon{
+      //   display: none;
+
+      //   &:hover{
+      //     display: block;
+      //   }
+      // }
+
     }
 
     .form {

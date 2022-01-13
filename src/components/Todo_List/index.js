@@ -65,10 +65,11 @@ const TodoList = () => {
     setTodoList(newTodoList)
   }
 
-  const onEnterNewTodo = (e, index, unCompleted, id) => {
+  const onEnterNewTodo = (e, unCompleted, id) => {
     const newTodoRef = React.createRef()
     if (e.keyCode === 13) {
-      if (index === (unCompletedList.length - 1)) {
+      const indexOfLastItem = unCompletedList[unCompletedList.length - 1].id
+      if (indexOfLastItem === id) {
         e.preventDefault()
         todoInputRef.current.focus()
       } else {
@@ -123,7 +124,7 @@ const TodoList = () => {
                 onChange={e => onChangeInputItems(e.target.value, todo.id)}
                 value={todo.value}
                 ref={todo.ref}
-                onKeyDown={e => onEnterNewTodo(e, index, todo.unCompleted, todo.id)}
+                onKeyDown={e => onEnterNewTodo(e, todo.unCompleted, todo.id)}
                 className="input-item"
               />
             </div>
@@ -159,7 +160,7 @@ const TodoList = () => {
               <input
                 className="todo-completed"
                 value={td.value}
-                onKeyDown={e => onEnterNewTodo(e, index, td.unCompleted, td.id)}
+                onKeyDown={e => onEnterNewTodo(e, td.unCompleted, td.id)}
                 onChange={e => onChangeInputItems(e.target.value, td.id)}
                 ref={td.ref}
               />

@@ -18,25 +18,33 @@ const usePrevious = value => {
 const TodoList = () => {
   const [todoInput, setTodoInput] = useState('')
   const [todoList, setTodoList] = useState([])
-  const [todoCompleted, setTodoCompleted] = useState([])
   const [headerCompleted, setHeaderCompleted] = useState(false)
   const [numberCompleted, setNumberCompleted] = useState(0)
+  const [focusId, setFocusId] = useState(null)
   const todoInputRef = useRef()
 
-  const preTodoList = usePrevious(todoList)
-
   const todoListLength = todoList.length
-  const preTodoListLength = usePrevious(todoListLength)
+  // const preTodoListLength = usePrevious(todoListLength)
 
   const onCreateTodo = e => {
+    if (e.keyCode === 13) {
+      e.preventDefault()
+    }
+
     const todoInput = e.target.value
     setTodoInput(todoInput)
 
     if (todoInput.length === 1) {
       const newTodoRef = React.createRef()
-      const newTodoItem = {id: v4(), value: e.target.value, ref: newTodoRef}
-      // todoList.push({id: v4(), value: e.target.value, ref: newTodoRef})
+      const newTodoItem = {
+        id: v4(),
+        value: e.target.value,
+        ref: newTodoRef,
+        unCompleted: true,
+      }
       setTodoList(prev => [...prev, newTodoItem])
+
+      setFocusId(newTodoItem.id)
 
       setTodoInput('')
     }
@@ -57,11 +65,18 @@ const TodoList = () => {
         e.preventDefault()
         todoInputRef.current.focus()
       } else {
-        const startArr = todoList.slice(0, index + 1)
-        const endArr = todoList.slice(index + 1)
-        const newInput = {id: v4(), value: '', ref: newTodoRef}
+        const startArr = unCompletedList.slice(0, index + 1)
+        const endArr = unCompletedList.slice(index + 1)
+        const newInput = {
+          id: v4(),
+          value: '',
+          ref: newTodoRef,
+          unCompleted: true,
+        }
         const updateTodoList = [...startArr, newInput, ...endArr]
         setTodoList(updateTodoList)
+
+        setFocusId(newInput.id)
       }
     }
   }
@@ -70,45 +85,54 @@ const TodoList = () => {
     setTodoList(todoList.filter(td => td.id !== id))
   }
 
-  const handleCheck = id => {
-    const itemCompleted = todoList.find(td => td.id === id)
-    setTodoCompleted(prev => [...prev, itemCompleted])
+  const handleCheck = (id, unCompleted) => {
+    const itemChecked = unCompletedList.find(td => td.id === id)
+    itemChecked.unCompleted = !unCompleted
+    setTodoList(prev => [...prev])
 
     setHeaderCompleted(true)
     setNumberCompleted(numberCompleted + 1)
-
-    setTodoList(todoList.filter(td => td.id !== id))
   }
 
-  const handleUncheck = id => {
-    const itemUnchecked = todoCompleted.find(td => td.id === id)
-    setTodoList(prev => [...prev, itemUnchecked])
+  const handleUncheck = (id, unCompleted) => {
+    const itemUnchecked = completedList.find(td => td.id === id)
+    itemUnchecked.unCompleted = unCompleted
+    setTodoList(prev => [...prev])
 
     setNumberCompleted(numberCompleted - 1)
     if (numberCompleted === 1) {
       setHeaderCompleted(false)
     }
-
-    setTodoCompleted(todoCompleted.filter(td => td.id !== id))
   }
 
-  useEffect(() => {
-    if (todoListLength > 0 && todoListLength > preTodoListLength) {
-      todoList[todoListLength - 1].ref.current.focus()
+  const completedList = todoList.filter(td => !td.unCompleted)
+  const unCompletedList = todoList.filter(td => td.unCompleted)
+  const unCompletedLength = unCompletedList.length
+  const preUnCompletedLength = usePrevious(unCompletedLength)
 
-      const itemFind= todoList.find((td, index) => todoList[index] !== preTodoList[index])
-      itemFind.ref.current.focus()
+  useEffect(() => {
+    if (
+      unCompletedLength > 0 &&
+      unCompletedLength > preUnCompletedLength &&
+      focusId !== null
+    ) {
+      const focusTodo = unCompletedList.find(dt => dt.id === focusId)
+      focusTodo.ref.current?.focus()
     }
-  }, [todoListLength, preTodoListLength])
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [preUnCompletedLength, unCompletedLength, focusId])
 
   return (
     <div className="container">
       <div className="todo-container">
         <header className="header">Tiêu Đề</header>
-        {todoList.map((todo, index) => (
+        {unCompletedList.map((todo, index) => (
           <div key={todo.id} className="input-item-container">
             <div className="input-container">
-              <input type="checkbox" onChange={() => handleCheck(todo.id)} />
+              <input
+                type="checkbox"
+                onChange={() => handleCheck(todo.id, todo.unCompleted)}
+              />
               <input
                 onChange={e => onChangeInputItems(e.target.value, todo.id)}
                 value={todo.value}
@@ -137,15 +161,19 @@ const TodoList = () => {
           <header className={headerCompleted ? 'header-show' : 'header-hide'}>
             {numberCompleted} mục đã hoàn tất
           </header>
-          {todoCompleted.map(td => (
+          {completedList.map(td => (
             <div className="completed-container" key={td.id}>
               <input
                 type="checkbox"
                 checked="checked"
                 className="input-checked"
-                onChange={() => handleUncheck(td.id)}
+                onChange={() => handleUncheck(td.id, td.unCompleted)}
               />
               <input className="todo-completed" value={td.value} />
+              <Icon
+                className="x icon"
+                onClick={() => onDeleteInputItem(td.id)}
+              />
             </div>
           ))}
         </div>

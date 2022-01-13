@@ -24,13 +24,21 @@ const TodoList = () => {
   const todoInputRef = useRef()
 
   const todoListLength = todoList.length
-  // const preTodoListLength = usePrevious(todoListLength)
+  const preTodoListLength = usePrevious(todoListLength)
+
+  useEffect(() => {
+    if(
+      todoListLength > 0 &&
+      todoListLength > preTodoListLength && 
+      focusId !== null
+    ){
+      const focusTodo = todoList.find(dt => dt.id === focusId)
+      focusTodo.ref.current?.focus()
+      console.log('focusId', focusId)
+    }
+  }, [todoListLength, preTodoListLength, todoList, focusId])
 
   const onCreateTodo = e => {
-    if (e.keyCode === 13) {
-      e.preventDefault()
-    }
-
     const todoInput = e.target.value
     setTodoInput(todoInput)
 
@@ -58,25 +66,40 @@ const TodoList = () => {
     setTodoList(newTodoList)
   }
 
-  const onEnterNewTodo = (e, index) => {
+  const onEnterNewTodo = (e, index, unCompleted, id) => {
     const newTodoRef = React.createRef()
     if (e.keyCode === 13) {
-      if (index === todoListLength - 1) {
+      if (index === unCompletedList.length - 1) {
         e.preventDefault()
         todoInputRef.current.focus()
       } else {
-        const startArr = unCompletedList.slice(0, index + 1)
-        const endArr = unCompletedList.slice(index + 1)
         const newInput = {
-          id: v4(),
-          value: '',
-          ref: newTodoRef,
-          unCompleted: true,
-        }
-        const updateTodoList = [...startArr, newInput, ...endArr]
-        setTodoList(updateTodoList)
+            id: v4(),
+            value: '',
+            ref: newTodoRef,
+            unCompleted: unCompleted,
+          }
 
-        setFocusId(newInput.id)
+        if(newInput.unCompleted === true){
+          const itemEnter = todoList.find(td => td.id === id)
+        
+          todoList.splice(todoList.indexOf(itemEnter) + 1, 0, newInput)
+          setTodoList(todoList)
+  
+          setFocusId(newInput.id)
+        }else{
+          const itemEnter = todoList.find(td => td.id === id)
+        
+          todoList.splice(todoList.indexOf(itemEnter) + 1, 0, newInput)
+          setTodoList(todoList)
+
+          setNumberCompleted(numberCompleted + 1)
+  
+          setFocusId(newInput.id)
+        }
+
+        console.log('item them', newInput.id)
+        
       }
     }
   }
@@ -117,20 +140,6 @@ const TodoList = () => {
 
   const completedList = todoList.filter(td => !td.unCompleted)
   const unCompletedList = todoList.filter(td => td.unCompleted)
-  const unCompletedLength = unCompletedList.length
-  const preUnCompletedLength = usePrevious(unCompletedLength)
-
-  useEffect(() => {
-    if (
-      unCompletedLength > 0 &&
-      unCompletedLength > preUnCompletedLength &&
-      focusId !== null
-    ) {
-      const focusTodo = unCompletedList.find(dt => dt.id === focusId)
-      focusTodo.ref.current?.focus()
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [preUnCompletedLength, unCompletedLength, focusId])
 
   return (
     <div className="container">
@@ -147,7 +156,7 @@ const TodoList = () => {
                 onChange={e => onChangeInputItems(e.target.value, todo.id)}
                 value={todo.value}
                 ref={todo.ref}
-                onKeyDown={e => onEnterNewTodo(e, index)}
+                onKeyDown={e => onEnterNewTodo(e, index, todo.unCompleted, todo.id)}
                 className="input-item"
               />
             </div>
@@ -171,7 +180,7 @@ const TodoList = () => {
           <header className={headerCompleted ? 'header-show' : 'header-hide'}>
             {numberCompleted} mục đã hoàn tất
           </header>
-          {completedList.map(td => (
+          {completedList.map((td, index) => (
             <div className="completed-container" key={td.id}>
               <input
                 type="checkbox"
@@ -179,7 +188,12 @@ const TodoList = () => {
                 className="input-checked"
                 onChange={() => handleUncheck(td.id, td.unCompleted)}
               />
-              <input className="todo-completed" value={td.value} />
+              <input
+                className="todo-completed"
+                value={td.value}
+                onKeyDown={e => onEnterNewTodo(e, index, td.unCompleted, td.id)}
+                onChange={e => onChangeInputItems(e.target.value, td.id)}
+              />
               <Icon
                 className="x icon"
                 onClick={() => onDeleteCompletedItem(td.id)}

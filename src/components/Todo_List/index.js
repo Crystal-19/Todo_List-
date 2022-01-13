@@ -138,6 +138,12 @@ const TodoList = () => {
     }
   }
 
+  const preventDefault = (e) => {
+    if(e.keyCode === 13){
+      e.preventDefault()
+    }
+  }
+
   const completedList = todoList.filter(td => !td.unCompleted)
   const unCompletedList = todoList.filter(td => td.unCompleted)
 
@@ -174,6 +180,7 @@ const TodoList = () => {
             onChange={onCreateTodo}
             value={todoInput}
             ref={todoInputRef}
+            onKeyDown={e => preventDefault(e)}
           />
         </form>
         <div className="completed-item-container">

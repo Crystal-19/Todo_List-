@@ -37,6 +37,8 @@ const TodoList = () => {
     }
   }, [todoListLength, preTodoListLength, todoList, focusId])
 
+  useEffect(() => {})
+
   const onCreateTodo = e => {
     const todoInput = e.target.value
     setTodoInput(todoInput)
@@ -59,13 +61,14 @@ const TodoList = () => {
 
   const onChangeInputItems = (value, id) => {
     const todoUpdate = todoList.find(item => item.id === id)
+
     todoUpdate.value = value
     const newTodoList = [...todoList]
 
     setTodoList(newTodoList)
   }
 
-  const onEnterNewTodo = (e, unCompleted, id) => {
+  const onEnterNewTodo = (e, unCompleted, id, value) => {
     const newTodoRef = React.createRef()
     if (e.keyCode === 13) {
       const indexOfLastItem = unCompletedList[unCompletedList.length - 1].id
@@ -86,6 +89,15 @@ const TodoList = () => {
 
         setFocusId(newInput.id)
       }
+    }
+
+    if (value === '') {
+      const indexItemDelete = todoList.findIndex(td => td.id === id)
+      const itemAbove = todoList[indexItemDelete - 1]
+      setTodoList(todoList.filter(td => td.id !== id))
+
+      e.preventDefault()
+      itemAbove.ref.current.focus()
     }
   }
 
@@ -124,7 +136,9 @@ const TodoList = () => {
                 onChange={e => onChangeInputItems(e.target.value, todo.id)}
                 value={todo.value}
                 ref={todo.ref}
-                onKeyDown={e => onEnterNewTodo(e, todo.unCompleted, todo.id)}
+                onKeyDown={e =>
+                  onEnterNewTodo(e, todo.unCompleted, todo.id, todo.value)
+                }
                 className="input-item"
               />
             </div>
@@ -160,7 +174,9 @@ const TodoList = () => {
               <input
                 className="todo-completed"
                 value={td.value}
-                onKeyDown={e => onEnterNewTodo(e, td.unCompleted, td.id)}
+                onKeyDown={e =>
+                  onEnterNewTodo(e, td.unCompleted, td.id, td.value)
+                }
                 onChange={e => onChangeInputItems(e.target.value, td.id)}
                 ref={td.ref}
               />

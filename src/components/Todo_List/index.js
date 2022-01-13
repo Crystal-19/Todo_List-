@@ -18,8 +18,6 @@ const usePrevious = value => {
 const TodoList = () => {
   const [todoInput, setTodoInput] = useState('')
   const [todoList, setTodoList] = useState([])
-  const [headerCompleted, setHeaderCompleted] = useState(false)
-  const [numberCompleted, setNumberCompleted] = useState(0)
   const [focusId, setFocusId] = useState(null)
   const todoInputRef = useRef()
 
@@ -27,11 +25,11 @@ const TodoList = () => {
   const preTodoListLength = usePrevious(todoListLength)
 
   useEffect(() => {
-    if(
+    if (
       todoListLength > 0 &&
-      todoListLength > preTodoListLength && 
+      todoListLength > preTodoListLength &&
       focusId !== null
-    ){
+    ) {
       const focusTodo = todoList.find(dt => dt.id === focusId)
       focusTodo.ref.current?.focus()
       console.log('focusId', focusId)
@@ -74,32 +72,19 @@ const TodoList = () => {
         todoInputRef.current.focus()
       } else {
         const newInput = {
-            id: v4(),
-            value: '',
-            ref: newTodoRef,
-            unCompleted: unCompleted,
-          }
-
-        if(newInput.unCompleted === true){
-          const itemEnter = todoList.find(td => td.id === id)
-        
-          todoList.splice(todoList.indexOf(itemEnter) + 1, 0, newInput)
-          setTodoList(todoList)
-  
-          setFocusId(newInput.id)
-        }else{
-          const itemEnter = todoList.find(td => td.id === id)
-        
-          todoList.splice(todoList.indexOf(itemEnter) + 1, 0, newInput)
-          setTodoList(todoList)
-
-          setNumberCompleted(numberCompleted + 1)
-  
-          setFocusId(newInput.id)
+          id: v4(),
+          value: '',
+          ref: newTodoRef,
+          unCompleted: unCompleted,
         }
+        const itemEnter = todoList.find(td => td.id === id)
+
+        todoList.splice(todoList.indexOf(itemEnter) + 1, 0, newInput)
+        setTodoList(todoList)
+
+        setFocusId(newInput.id)
 
         console.log('item them', newInput.id)
-        
       }
     }
   }
@@ -110,20 +95,12 @@ const TodoList = () => {
 
   const onDeleteCompletedItem = id => {
     setTodoList(todoList.filter(td => td.id !== id))
-
-    setNumberCompleted(numberCompleted - 1)
-    if (numberCompleted === 1) {
-      setHeaderCompleted(false)
-    }
   }
 
   const handleCheck = (id, unCompleted) => {
     const itemChecked = unCompletedList.find(td => td.id === id)
     itemChecked.unCompleted = !unCompleted
     setTodoList(prev => [...prev])
-
-    setHeaderCompleted(true)
-    setNumberCompleted(numberCompleted + 1)
   }
 
   const handleUncheck = (id, unCompleted) => {
@@ -132,20 +109,17 @@ const TodoList = () => {
     itemUnchecked.unCompleted = !unCompleted
     setTodoList(prev => [...prev])
 
-    setNumberCompleted(numberCompleted - 1)
-    if (numberCompleted === 1) {
-      setHeaderCompleted(false)
-    }
   }
 
-  const preventDefault = (e) => {
-    if(e.keyCode === 13){
+  const preventDefault = e => {
+    if (e.keyCode === 13) {
       e.preventDefault()
     }
   }
 
   const completedList = todoList.filter(td => !td.unCompleted)
   const unCompletedList = todoList.filter(td => td.unCompleted)
+  const numberCompleted = completedList.length
 
   return (
     <div className="container">
@@ -162,7 +136,9 @@ const TodoList = () => {
                 onChange={e => onChangeInputItems(e.target.value, todo.id)}
                 value={todo.value}
                 ref={todo.ref}
-                onKeyDown={e => onEnterNewTodo(e, index, todo.unCompleted, todo.id)}
+                onKeyDown={e =>
+                  onEnterNewTodo(e, index, todo.unCompleted, todo.id)
+                }
                 className="input-item"
               />
             </div>
@@ -184,7 +160,7 @@ const TodoList = () => {
           />
         </form>
         <div className="completed-item-container">
-          <header className={headerCompleted ? 'header-show' : 'header-hide'}>
+          <header className={numberCompleted ? 'header-show' : 'header-hide'}>
             {numberCompleted} mục đã hoàn tất
           </header>
           {completedList.map((td, index) => (

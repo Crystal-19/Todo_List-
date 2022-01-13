@@ -85,6 +85,15 @@ const TodoList = () => {
     setTodoList(todoList.filter(td => td.id !== id))
   }
 
+  const onDeleteCompletedItem = id => {
+    setTodoList(todoList.filter(td => td.id !== id))
+
+    setNumberCompleted(numberCompleted - 1)
+    if (numberCompleted === 1) {
+      setHeaderCompleted(false)
+    }
+  }
+
   const handleCheck = (id, unCompleted) => {
     const itemChecked = unCompletedList.find(td => td.id === id)
     itemChecked.unCompleted = !unCompleted
@@ -96,7 +105,8 @@ const TodoList = () => {
 
   const handleUncheck = (id, unCompleted) => {
     const itemUnchecked = completedList.find(td => td.id === id)
-    itemUnchecked.unCompleted = unCompleted
+    console.log(itemUnchecked)
+    itemUnchecked.unCompleted = !unCompleted
     setTodoList(prev => [...prev])
 
     setNumberCompleted(numberCompleted - 1)
@@ -172,7 +182,7 @@ const TodoList = () => {
               <input className="todo-completed" value={td.value} />
               <Icon
                 className="x icon"
-                onClick={() => onDeleteInputItem(td.id)}
+                onClick={() => onDeleteCompletedItem(td.id)}
               />
             </div>
           ))}

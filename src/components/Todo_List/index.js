@@ -32,6 +32,7 @@ const TodoList = () => {
     ) {
       const focusTodo = todoList.find(dt => dt.id === focusId)
       focusTodo.ref.current?.focus()
+      console.log('focusTodo', focusTodo)
       console.log('focusId', focusId)
     }
   }, [todoListLength, preTodoListLength, todoList, focusId])
@@ -67,7 +68,7 @@ const TodoList = () => {
   const onEnterNewTodo = (e, index, unCompleted, id) => {
     const newTodoRef = React.createRef()
     if (e.keyCode === 13) {
-      if (index === unCompletedList.length - 1) {
+      if (index === (unCompletedList.length - 1)) {
         e.preventDefault()
         todoInputRef.current.focus()
       } else {
@@ -77,14 +78,12 @@ const TodoList = () => {
           ref: newTodoRef,
           unCompleted: unCompleted,
         }
-        const itemEnter = todoList.find(td => td.id === id)
+        const indexItemEnter = todoList.findIndex(td => td.id === id)
 
-        todoList.splice(todoList.indexOf(itemEnter) + 1, 0, newInput)
+        todoList.splice(indexItemEnter + 1, 0, newInput)
         setTodoList(todoList)
 
         setFocusId(newInput.id)
-
-        console.log('item them', newInput.id)
       }
     }
   }
@@ -93,22 +92,10 @@ const TodoList = () => {
     setTodoList(todoList.filter(td => td.id !== id))
   }
 
-  const onDeleteCompletedItem = id => {
-    setTodoList(todoList.filter(td => td.id !== id))
-  }
-
   const handleCheck = (id, unCompleted) => {
-    const itemChecked = unCompletedList.find(td => td.id === id)
+    const itemChecked = todoList.find(td => td.id === id)
     itemChecked.unCompleted = !unCompleted
     setTodoList(prev => [...prev])
-  }
-
-  const handleUncheck = (id, unCompleted) => {
-    const itemUnchecked = completedList.find(td => td.id === id)
-    console.log(itemUnchecked)
-    itemUnchecked.unCompleted = !unCompleted
-    setTodoList(prev => [...prev])
-
   }
 
   const preventDefault = e => {
@@ -136,9 +123,7 @@ const TodoList = () => {
                 onChange={e => onChangeInputItems(e.target.value, todo.id)}
                 value={todo.value}
                 ref={todo.ref}
-                onKeyDown={e =>
-                  onEnterNewTodo(e, index, todo.unCompleted, todo.id)
-                }
+                onKeyDown={e => onEnterNewTodo(e, index, todo.unCompleted, todo.id)}
                 className="input-item"
               />
             </div>
@@ -169,17 +154,18 @@ const TodoList = () => {
                 type="checkbox"
                 checked="checked"
                 className="input-checked"
-                onChange={() => handleUncheck(td.id, td.unCompleted)}
+                onChange={() => handleCheck(td.id, td.unCompleted)}
               />
               <input
                 className="todo-completed"
                 value={td.value}
                 onKeyDown={e => onEnterNewTodo(e, index, td.unCompleted, td.id)}
                 onChange={e => onChangeInputItems(e.target.value, td.id)}
+                ref={td.ref}
               />
               <Icon
                 className="x icon"
-                onClick={() => onDeleteCompletedItem(td.id)}
+                onClick={() => onDeleteInputItem(td.id)}
               />
             </div>
           ))}

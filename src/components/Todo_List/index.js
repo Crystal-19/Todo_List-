@@ -131,7 +131,7 @@ const TodoList = () => {
   const onToggleCompletedHeader = () => {
     setHeaderToggle(!headerToggle)
   }
-  
+
   const completedList = todoList.filter(td => !td.unCompleted)
   const unCompletedList = todoList.filter(td => td.unCompleted)
   const numberCompleted = completedList.length
@@ -156,33 +156,51 @@ const TodoList = () => {
     ))
   }
 
+  const TodoInput = () => {
+    return (
+      <div className="form">
+        <Icon name="add" />
+        <input
+          className="input"
+          placeholder="Mục danh sách"
+          onChange={onCreateTodo}
+          value={todoInput}
+          ref={todoInputRef}
+        />
+      </div>
+    )
+  }
+
+  const CompletedHeader = () => {
+    return (
+      <div className={numberCompleted ? 'header-show' : 'header-hide'}>
+        <Icon
+          onClick={onToggleCompletedHeader}
+          className={headerToggle ? 'angle down' : 'angle right'}
+        />
+        {numberCompleted} mục đã hoàn tất
+      </div>
+    )
+  }
+
+  const CompletedTodo = () => {
+    return (
+      <div className="completed-item-container">
+        {CompletedHeader()}
+        <div className={headerToggle ? 'completed-show' : 'completed-hide'}>
+          {RenderTodo(completedList)}
+        </div>
+      </div>
+    )
+  }
+
   return (
     <div className="container">
       <div className="todo-container">
         <div className="header">Tiêu Đề</div>
         {RenderTodo(unCompletedList)}
-        <div className="form">
-          <Icon name="add" />
-          <input
-            className="input"
-            placeholder="Mục danh sách"
-            onChange={onCreateTodo}
-            value={todoInput}
-            ref={todoInputRef}
-          />
-        </div>
-        <div className="completed-item-container">
-          <div className={numberCompleted ? 'header-show' : 'header-hide'}>
-            <Icon
-              onClick={onToggleCompletedHeader}
-              className={headerToggle ? 'angle down' : 'angle right'}
-            />
-            {numberCompleted} mục đã hoàn tất
-          </div>
-          <div className={headerToggle ? 'completed-show' : 'completed-hide'}>
-            {RenderTodo(completedList)}
-          </div>
-        </div>
+        {TodoInput()}
+        {CompletedTodo()}
       </div>
     </div>
   )

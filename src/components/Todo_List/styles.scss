@@ -18,6 +18,7 @@
     .input-item-container {
       @include flex(row, center, space-between);
       width: 100%;
+      padding: 10px;
 
       .input-container {
         @include flex(row, center, flex-start);
@@ -64,11 +65,11 @@
     }
 
     .completed-item-container {
-      padding: 10px;
       width: 100%;
 
       .header-show {
         display: block;
+        padding: 10px;
       }
 
       .header-hide {
@@ -85,7 +86,7 @@
 
       .input-item-container {
         opacity: 0.5;
-        
+
         .input-item {
           text-decoration: line-through;
         }

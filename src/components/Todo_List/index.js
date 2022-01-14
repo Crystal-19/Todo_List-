@@ -32,12 +32,8 @@ const TodoList = () => {
     ) {
       const focusTodo = todoList.find(dt => dt.id === focusId)
       focusTodo.ref.current?.focus()
-      console.log('focusTodo', focusTodo)
-      console.log('focusId', focusId)
     }
   }, [todoListLength, preTodoListLength, todoList, focusId])
-
-  useEffect(() => {})
 
   const onCreateTodo = e => {
     const todoInput = e.target.value
@@ -68,9 +64,9 @@ const TodoList = () => {
     setTodoList(newTodoList)
   }
 
-  const onEnterNewTodo = (e, index, unCompleted, id, value) => {
-    const newTodoRef = React.createRef()
-    if (e.keyCode === 13) {
+  const onKeyDown = (e, index, unCompleted, id, value) => {
+    const onEnter = () => {
+      const newTodoRef = React.createRef()
       const indexOfLastItem = unCompletedList[unCompletedList.length - 1].id
       if (indexOfLastItem === id) {
         e.preventDefault()
@@ -91,7 +87,7 @@ const TodoList = () => {
       }
     }
 
-    if (value === '' && e.keyCode === 8) {
+    const onBackSpace = () => {
       const itemDelete = todoList.findIndex(td => td.id === id)
       const itemAbove = todoList[itemDelete - 1]
 
@@ -101,13 +97,21 @@ const TodoList = () => {
         itemAbove.ref.current.focus()
       }
     }
+
+    if (e.keyCode === 13) {
+      return onEnter()
+    }
+
+    if (value === '' && e.keyCode === 8) {
+      return onBackSpace()
+    }
   }
 
   const onDeleteInputItem = id => {
     setTodoList(todoList.filter(td => td.id !== id))
   }
 
-  const handleCheck = (id, unCompleted) => {
+  const checkHandler = (id, unCompleted) => {
     const itemChecked = todoList.find(td => td.id === id)
     itemChecked.unCompleted = !unCompleted
     setTodoList(prev => [...prev])
@@ -132,20 +136,14 @@ const TodoList = () => {
             <div className="input-container">
               <input
                 type="checkbox"
-                onChange={() => handleCheck(todo.id, todo.unCompleted)}
+                onChange={() => checkHandler(todo.id, todo.unCompleted)}
               />
               <input
                 onChange={e => onChangeInputItems(e.target.value, todo.id)}
                 value={todo.value}
                 ref={todo.ref}
                 onKeyDown={e =>
-                  onEnterNewTodo(
-                    e,
-                    index,
-                    todo.unCompleted,
-                    todo.id,
-                    todo.value,
-                  )
+                  onKeyDown(e, index, todo.unCompleted, todo.id, todo.value)
                 }
                 className="input-item"
               />
@@ -177,13 +175,13 @@ const TodoList = () => {
                 type="checkbox"
                 checked="checked"
                 className="input-checked"
-                onChange={() => handleCheck(td.id, td.unCompleted)}
+                onChange={() => checkHandler(td.id, td.unCompleted)}
               />
               <input
                 className="todo-completed"
                 value={td.value}
                 onKeyDown={e =>
-                  onEnterNewTodo(e, index, td.unCompleted, td.id, td.value)
+                  onKeyDown(e, index, td.unCompleted, td.id, td.value)
                 }
                 onChange={e => onChangeInputItems(e.target.value, td.id)}
                 ref={td.ref}

@@ -92,8 +92,7 @@ const TodoList = () => {
       if (index > 0) {
         const itemDelete = todoList.find(td => td.id === id)
         if (unCompletedList.includes(itemDelete)) {
-          const itemFocus =
-            unCompletedList[unCompletedList.indexOf(itemDelete) - 1]
+          const itemFocus = unCompletedList[unCompletedList.indexOf(itemDelete) - 1]
 
           setTodoList(todoList.filter(td => td.id !== id))
           e.preventDefault()
@@ -154,7 +153,7 @@ const TodoList = () => {
   return (
     <div className="container">
       <div className="todo-container">
-        <header className="header">Tiêu Đề</header>
+        <div className="header">Tiêu Đề</div>
         {RenderTodo(unCompletedList)}
         <div className="form">
           <Icon name="add" />
@@ -167,9 +166,9 @@ const TodoList = () => {
           />
         </div>
         <div className="completed-item-container">
-          <header className={numberCompleted ? 'header-show' : 'header-hide'}>
+          <div className={numberCompleted ? 'header-show' : 'header-hide'}>
             {numberCompleted} mục đã hoàn tất
-          </header>
+          </div>
           {RenderTodo(completedList)}
         </div>
       </div>

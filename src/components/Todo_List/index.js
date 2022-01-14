@@ -1,6 +1,6 @@
 import React, {useState, useRef, useEffect} from 'react'
 
-import {Icon} from 'semantic-ui-react'
+import {Icon, ItemGroup} from 'semantic-ui-react'
 import {v4} from 'uuid'
 
 import './styles.scss'
@@ -68,7 +68,7 @@ const TodoList = () => {
     setTodoList(newTodoList)
   }
 
-  const onEnterNewTodo = (e, unCompleted, id, value) => {
+  const onEnterNewTodo = (e, index, unCompleted, id, value) => {
     const newTodoRef = React.createRef()
     if (e.keyCode === 13) {
       const indexOfLastItem = unCompletedList[unCompletedList.length - 1].id
@@ -91,13 +91,15 @@ const TodoList = () => {
       }
     }
 
-    if (value === '') {
-      const indexItemDelete = todoList.findIndex(td => td.id === id)
-      const itemAbove = todoList[indexItemDelete - 1]
-      setTodoList(todoList.filter(td => td.id !== id))
+    if (value === '' && e.keyCode === 8) {
+      const itemDelete = todoList.findIndex(td => td.id === id)
+      const itemAbove = todoList[itemDelete - 1]
 
-      e.preventDefault()
-      itemAbove.ref.current.focus()
+      if (index > 0) {
+        setTodoList(todoList.filter(td => td.id !== id))
+        e.preventDefault()
+        itemAbove.ref.current.focus()
+      }
     }
   }
 
@@ -137,7 +139,13 @@ const TodoList = () => {
                 value={todo.value}
                 ref={todo.ref}
                 onKeyDown={e =>
-                  onEnterNewTodo(e, todo.unCompleted, todo.id, todo.value)
+                  onEnterNewTodo(
+                    e,
+                    index,
+                    todo.unCompleted,
+                    todo.id,
+                    todo.value,
+                  )
                 }
                 className="input-item"
               />
@@ -175,7 +183,7 @@ const TodoList = () => {
                 className="todo-completed"
                 value={td.value}
                 onKeyDown={e =>
-                  onEnterNewTodo(e, td.unCompleted, td.id, td.value)
+                  onEnterNewTodo(e, index, td.unCompleted, td.id, td.value)
                 }
                 onChange={e => onChangeInputItems(e.target.value, td.id)}
                 ref={td.ref}

@@ -78,7 +78,7 @@ const TodoList = () => {
           ref: newTodoRef,
           unCompleted,
         }
-        
+
         const indexItemEnter = todoList.findIndex(td => td.id === id)
 
         todoList.splice(indexItemEnter + 1, 0, newInput)
@@ -89,13 +89,22 @@ const TodoList = () => {
     }
 
     const onBackSpace = () => {
-      const indexItemDelete = todoList.findIndex(td => td.id === id)
-      const itemFocus = todoList[indexItemDelete - 1]
-
       if (index > 0) {
-        setTodoList(todoList.filter(td => td.id !== id))
-        e.preventDefault()
-        itemFocus.ref.current.focus()
+        const itemDelete = todoList.find(td => td.id === id)
+        if (unCompletedList.includes(itemDelete)) {
+          const itemFocus =
+            unCompletedList[unCompletedList.indexOf(itemDelete) - 1]
+
+          setTodoList(todoList.filter(td => td.id !== id))
+          e.preventDefault()
+          itemFocus.ref.current.focus()
+        } else {
+          const itemFocus = completedList[completedList.indexOf(itemDelete) - 1]
+
+          setTodoList(todoList.filter(td => td.id !== id))
+          e.preventDefault()
+          itemFocus.ref.current.focus()
+        }
       }
     }
 

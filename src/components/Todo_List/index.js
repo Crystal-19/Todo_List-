@@ -131,33 +131,31 @@ const TodoList = () => {
   const unCompletedList = todoList.filter(td => td.unCompleted)
   const numberCompleted = completedList.length
 
+  const RenderTodo = list => {
+    return list.map((todo, index) => (
+      <div key={todo.id} className="input-item-container">
+        <div className="input-container">
+          <input type="checkbox" onChange={() => onChangeTodoStatus(todo.id)} />
+          <input
+            onChange={e => onChangeTodoValue(e.target.value, todo.id)}
+            value={todo.value}
+            ref={todo.ref}
+            onKeyDown={e =>
+              onKeyDown(e, index, todo.unCompleted, todo.id, todo.value)
+            }
+            className="input-item"
+          />
+        </div>
+        <Icon className="x icon" onClick={() => onDeleteInputItem(todo.id)} />
+      </div>
+    ))
+  }
+
   return (
     <div className="container">
       <div className="todo-container">
         <header className="header">Tiêu Đề</header>
-        {unCompletedList.map((todo, index) => (
-          <div key={todo.id} className="input-item-container">
-            <div className="input-container">
-              <input
-                type="checkbox"
-                onChange={() => onChangeTodoStatus(todo.id)}
-              />
-              <input
-                onChange={e => onChangeTodoValue(e.target.value, todo.id)}
-                value={todo.value}
-                ref={todo.ref}
-                onKeyDown={e =>
-                  onKeyDown(e, index, todo.unCompleted, todo.id, todo.value)
-                }
-                className="input-item"
-              />
-            </div>
-            <Icon
-              className="x icon"
-              onClick={() => onDeleteInputItem(todo.id)}
-            />
-          </div>
-        ))}
+        {RenderTodo(unCompletedList)}
         <div className="form">
           <Icon name="add" />
           <input
@@ -172,29 +170,7 @@ const TodoList = () => {
           <header className={numberCompleted ? 'header-show' : 'header-hide'}>
             {numberCompleted} mục đã hoàn tất
           </header>
-          {completedList.map((td, index) => (
-            <div className="completed-container" key={td.id}>
-              <input
-                type="checkbox"
-                checked="checked"
-                className="input-checked"
-                onChange={() => onChangeTodoStatus(td.id)}
-              />
-              <input
-                className="todo-completed"
-                value={td.value}
-                onKeyDown={e =>
-                  onKeyDown(e, index, td.unCompleted, td.id, td.value)
-                }
-                onChange={e => onChangeTodoValue(e.target.value, td.id)}
-                ref={td.ref}
-              />
-              <Icon
-                className="x icon"
-                onClick={() => onDeleteInputItem(td.id)}
-              />
-            </div>
-          ))}
+          {RenderTodo(completedList)}
         </div>
       </div>
     </div>

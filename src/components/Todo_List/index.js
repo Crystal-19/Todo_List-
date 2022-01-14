@@ -1,6 +1,6 @@
 import React, {useState, useRef, useEffect} from 'react'
 
-import {Icon, ItemGroup} from 'semantic-ui-react'
+import {Icon} from 'semantic-ui-react'
 import {v4} from 'uuid'
 
 import './styles.scss'
@@ -39,7 +39,7 @@ const TodoList = () => {
     const todoInput = e.target.value
     setTodoInput(todoInput)
 
-    if (todoInput.length === 1) {
+    if (todoInput !== '') {
       const newTodoRef = React.createRef()
       const newTodoItem = {
         id: v4(),
@@ -55,7 +55,7 @@ const TodoList = () => {
     }
   }
 
-  const onChangeInputItems = (value, id) => {
+  const onChangeTodoValue = (value, id) => {
     const todoUpdate = todoList.find(item => item.id === id)
 
     todoUpdate.value = value
@@ -66,18 +66,19 @@ const TodoList = () => {
 
   const onKeyDown = (e, index, unCompleted, id, value) => {
     const onEnter = () => {
-      const newTodoRef = React.createRef()
-      const indexOfLastItem = unCompletedList[unCompletedList.length - 1].id
-      if (indexOfLastItem === id) {
+      const lastIdUncompleted = unCompletedList[unCompletedList.length - 1].id
+      if (lastIdUncompleted === id) {
         e.preventDefault()
         todoInputRef.current.focus()
       } else {
+        const newTodoRef = React.createRef()
         const newInput = {
           id: v4(),
           value: '',
           ref: newTodoRef,
-          unCompleted: unCompleted,
+          unCompleted,
         }
+        
         const indexItemEnter = todoList.findIndex(td => td.id === id)
 
         todoList.splice(indexItemEnter + 1, 0, newInput)
@@ -88,13 +89,13 @@ const TodoList = () => {
     }
 
     const onBackSpace = () => {
-      const itemDelete = todoList.findIndex(td => td.id === id)
-      const itemAbove = todoList[itemDelete - 1]
+      const indexItemDelete = todoList.findIndex(td => td.id === id)
+      const itemFocus = todoList[indexItemDelete - 1]
 
       if (index > 0) {
         setTodoList(todoList.filter(td => td.id !== id))
         e.preventDefault()
-        itemAbove.ref.current.focus()
+        itemFocus.ref.current.focus()
       }
     }
 
@@ -111,16 +112,10 @@ const TodoList = () => {
     setTodoList(todoList.filter(td => td.id !== id))
   }
 
-  const checkHandler = (id, unCompleted) => {
+  const onChangeTodoStatus = id => {
     const itemChecked = todoList.find(td => td.id === id)
-    itemChecked.unCompleted = !unCompleted
+    itemChecked.unCompleted = !itemChecked.unCompleted
     setTodoList(prev => [...prev])
-  }
-
-  const preventDefault = e => {
-    if (e.keyCode === 13) {
-      e.preventDefault()
-    }
   }
 
   const completedList = todoList.filter(td => !td.unCompleted)
@@ -136,10 +131,10 @@ const TodoList = () => {
             <div className="input-container">
               <input
                 type="checkbox"
-                onChange={() => checkHandler(todo.id, todo.unCompleted)}
+                onChange={() => onChangeTodoStatus(todo.id)}
               />
               <input
-                onChange={e => onChangeInputItems(e.target.value, todo.id)}
+                onChange={e => onChangeTodoValue(e.target.value, todo.id)}
                 value={todo.value}
                 ref={todo.ref}
                 onKeyDown={e =>
@@ -154,7 +149,7 @@ const TodoList = () => {
             />
           </div>
         ))}
-        <form className="form">
+        <div className="form">
           <Icon name="add" />
           <input
             className="input"
@@ -162,9 +157,8 @@ const TodoList = () => {
             onChange={onCreateTodo}
             value={todoInput}
             ref={todoInputRef}
-            onKeyDown={e => preventDefault(e)}
           />
-        </form>
+        </div>
         <div className="completed-item-container">
           <header className={numberCompleted ? 'header-show' : 'header-hide'}>
             {numberCompleted} mục đã hoàn tất
@@ -175,7 +169,7 @@ const TodoList = () => {
                 type="checkbox"
                 checked="checked"
                 className="input-checked"
-                onChange={() => checkHandler(td.id, td.unCompleted)}
+                onChange={() => onChangeTodoStatus(td.id)}
               />
               <input
                 className="todo-completed"
@@ -183,7 +177,7 @@ const TodoList = () => {
                 onKeyDown={e =>
                   onKeyDown(e, index, td.unCompleted, td.id, td.value)
                 }
-                onChange={e => onChangeInputItems(e.target.value, td.id)}
+                onChange={e => onChangeTodoValue(e.target.value, td.id)}
                 ref={td.ref}
               />
               <Icon

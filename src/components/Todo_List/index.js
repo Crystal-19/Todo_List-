@@ -19,6 +19,7 @@ const TodoList = () => {
   const [todoInput, setTodoInput] = useState('')
   const [todoList, setTodoList] = useState([])
   const [focusId, setFocusId] = useState(null)
+  const [headerToggle, setHeaderToggle] = useState(true)
   const todoInputRef = useRef()
 
   const todoListLength = todoList.length
@@ -92,7 +93,8 @@ const TodoList = () => {
       if (index > 0) {
         const itemDelete = todoList.find(td => td.id === id)
         if (unCompletedList.includes(itemDelete)) {
-          const itemFocus = unCompletedList[unCompletedList.indexOf(itemDelete) - 1]
+          const itemFocus =
+            unCompletedList[unCompletedList.indexOf(itemDelete) - 1]
 
           setTodoList(todoList.filter(td => td.id !== id))
           e.preventDefault()
@@ -126,6 +128,10 @@ const TodoList = () => {
     setTodoList(prev => [...prev])
   }
 
+  const onToggleCompletedHeader = () => {
+    setHeaderToggle(!headerToggle)
+  }
+  
   const completedList = todoList.filter(td => !td.unCompleted)
   const unCompletedList = todoList.filter(td => td.unCompleted)
   const numberCompleted = completedList.length
@@ -167,9 +173,15 @@ const TodoList = () => {
         </div>
         <div className="completed-item-container">
           <div className={numberCompleted ? 'header-show' : 'header-hide'}>
+            <Icon
+              onClick={onToggleCompletedHeader}
+              className={headerToggle ? 'angle down' : 'angle right'}
+            />
             {numberCompleted} mục đã hoàn tất
           </div>
-          {RenderTodo(completedList)}
+          <div className={headerToggle ? 'completed-show' : 'completed-hide'}>
+            {RenderTodo(completedList)}
+          </div>
         </div>
       </div>
     </div>

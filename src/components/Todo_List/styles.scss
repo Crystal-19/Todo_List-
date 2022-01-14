@@ -75,9 +75,20 @@
         display: none;
       }
 
+      .completed-hide {
+        display: none;
+      }
+
+      .completed-show {
+        display: block;
+      }
+
       .input-item-container {
         opacity: 0.5;
-        text-decoration: line-through;
+        
+        .input-item {
+          text-decoration: line-through;
+        }
       }
     }
   }

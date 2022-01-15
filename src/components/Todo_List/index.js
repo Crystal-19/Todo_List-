@@ -134,7 +134,7 @@ const TodoList = () => {
   const unCompletedList = todoList.filter(td => td.unCompleted)
   const numberCompleted = completedList.length
 
-  const RenderTodo = list => {
+  const renderTodo = list => {
     return list.map((todo, index) => (
       <div key={todo.id} className="input-item-container">
         <div className="input-container">
@@ -154,7 +154,7 @@ const TodoList = () => {
     ))
   }
 
-  const TodoInput = () => {
+  const renderInput = () => {
     return (
       <div className="form">
         <Icon name="add" />
@@ -169,7 +169,7 @@ const TodoList = () => {
     )
   }
 
-  const CompletedHeader = () => {
+  const renderCompletedHeader = () => {
     return (
       <div className={numberCompleted ? 'header-show' : 'header-hide'}>
         <Icon
@@ -181,12 +181,12 @@ const TodoList = () => {
     )
   }
 
-  const CompletedTodo = () => {
+  const renderCompletedTodo = () => {
     return (
       <div className="completed-item-container">
-        {CompletedHeader()}
+        {renderCompletedHeader()}
         <div className={headerToggle ? 'completed-show' : 'completed-hide'}>
-          {RenderTodo(completedList)}
+          {renderTodo(completedList)}
         </div>
       </div>
     )
@@ -196,9 +196,9 @@ const TodoList = () => {
     <div className="container">
       <div className="todo-container">
         <div className="header">Tiêu Đề</div>
-        {RenderTodo(unCompletedList)}
-        {TodoInput()}
-        {CompletedTodo()}
+        {renderTodo(unCompletedList)}
+        {renderInput()}
+        {renderCompletedTodo()}
       </div>
     </div>
   )

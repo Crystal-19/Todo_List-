@@ -96,21 +96,14 @@ const TodoList = () => {
           td => td.id === itemDelete.id,
         )
 
-        if (isCompletedItem) {
-          const itemFocus =
-          completedList[completedList.findIndex(item => item.id === itemDelete.id) - 1]
+        const arrToFind = isCompletedItem ? completedList : unCompletedList
 
-          setTodoList(todoList.filter(td => td.id !== id))
-          e.preventDefault()
-          itemFocus.ref.current.focus()
-        } else {
-          const itemFocus =
-          unCompletedList[unCompletedList.findIndex(item => item.id === itemDelete.id) - 1]
+        const itemFocus =
+          arrToFind[arrToFind.findIndex(item => item.id === itemDelete.id) - 1]
 
-          setTodoList(todoList.filter(td => td.id !== id))
-          e.preventDefault()
-          itemFocus.ref.current.focus()
-        }
+        setTodoList(todoList.filter(td => td.id !== id))
+        e.preventDefault()
+        itemFocus.ref.current.focus()
       }
     }
 

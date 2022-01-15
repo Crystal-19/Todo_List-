@@ -92,30 +92,25 @@ const TodoList = () => {
     const onBackSpace = () => {
       if (index > 0) {
         const itemDelete = todoList.find(td => td.id === id)
+        const isCompletedItem = completedList.some(
+          td => td.id === itemDelete.id,
+        )
+        
+        if (isCompletedItem) {
+          const itemFocus =
+          completedList[completedList.findIndex(item => item === itemDelete) - 1]
 
-        unCompletedList.forEach(item => {
-          if (item.id === itemDelete.id) {
-            const itemFocus =
-              unCompletedList[unCompletedList.indexOf(itemDelete) - 1]
+          setTodoList(todoList.filter(td => td.id !== id))
+          e.preventDefault()
+          itemFocus.ref.current.focus()
+        } else {
+          const itemFocus =
+          unCompletedList[unCompletedList.findIndex(item => item === itemDelete) - 1]
 
-            setTodoList(todoList.filter(td => td.id !== id))
-            e.preventDefault()
-            itemFocus.ref.current.focus()
-            return
-          }
-        })
-
-        completedList.forEach(item => {
-          if (item.id === itemDelete.id) {
-            const itemFocus =
-              completedList[completedList.indexOf(itemDelete) - 1]
-
-            setTodoList(todoList.filter(td => td.id !== id))
-            e.preventDefault()
-            itemFocus.ref.current.focus()
-            return
-          }
-        })
+          setTodoList(todoList.filter(td => td.id !== id))
+          e.preventDefault()
+          itemFocus.ref.current.focus()
+        }
       }
     }
 

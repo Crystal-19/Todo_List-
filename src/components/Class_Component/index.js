@@ -20,8 +20,9 @@ class TodoInput extends Component {
 
   componentDidUpdate(preProps, prevState) {
       const { todoList, focusId } = this.state
-      const {todoList: preTodoList} = prevState
-    if (todoList.length > 0 && preTodoList.length < todoList.length && focusId !== null) {  
+      const {todoList: prevTodoList} = prevState
+
+    if (todoList.length > 0 && prevTodoList.length < todoList.length && focusId !== null) {  
       const focusTodo = todoList.find(dt => dt.id === focusId)
       focusTodo.ref.current?.focus()
     }
@@ -87,10 +88,9 @@ class TodoInput extends Component {
         }
 
         const indexItemEnter = todoList.findIndex(td => td.id === id)
-
-        todoList.splice(indexItemEnter + 1, 0, newInput)
-        this.setState({todoList: todoList})
-        this.setState({focusId: newInput.id})
+        const updateTodoList = [...todoList]
+        updateTodoList.splice(indexItemEnter + 1, 0, newInput)
+        this.setState({todoList: updateTodoList, focusId: newInput.id})
       }
     }
 

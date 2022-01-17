@@ -3,7 +3,7 @@ import React from 'react'
 import 'semantic-ui-css/semantic.min.css'
 import 'assets/scss/global.scss'
 
-import TodoList from 'components/Todo_List'
+import TodoList from 'components/Class_Component'
 
 
 function App() {

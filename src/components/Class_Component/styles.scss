@@ -1,0 +1,96 @@
+@import 'assets/scss';
+
+.container {
+  @include flex(row, center, center);
+  height: 100vh;
+  background-color: $pink;
+
+  .todo-container {
+    @include flex(column, flex-start, center);
+    width: 40%;
+    border: solid 1px $black;
+    border-radius: 10px;
+
+    .header {
+      padding: 10px 0 10px 10px;
+      font-weight: bold;
+    }
+    .input-item-container {
+      @include flex(row, center, space-between);
+      width: 100%;
+      padding: 10px;
+
+      .input-container {
+        @include flex(row, center, flex-start);
+        padding: 10px;
+        width: 100%;
+
+        .input-item {
+          border: none;
+          background-color: transparent;
+          outline: none;
+          padding: 10px;
+        }
+
+        &:hover ~ i.icon {
+          display: block;
+        }
+      }
+
+      i.icon {
+        display: none;
+        cursor: pointer;
+
+        &:hover {
+          display: block;
+          border-radius: 50%;
+          width: 1.5rem;
+          height: 1.5rem;
+          opacity: 0.5;
+          background: white;
+        }
+      }
+    }
+
+    .form {
+      padding: 10px;
+      width: 100%;
+      border-top: solid 0.5px $black;
+
+      .input {
+        border: none;
+        background-color: transparent;
+        outline: none;
+      }
+    }
+
+    .completed-item-container {
+      width: 100%;
+
+      .header-show {
+        display: block;
+        padding: 10px;
+      }
+
+      .header-hide {
+        display: none;
+      }
+
+      .completed-hide {
+        display: none;
+      }
+
+      .completed-show {
+        display: block;
+      }
+
+      .input-item-container {
+        opacity: 0.5;
+
+        .input-item {
+          text-decoration: line-through;
+        }
+      }
+    }
+  }
+}

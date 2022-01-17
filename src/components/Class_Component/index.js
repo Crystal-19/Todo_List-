@@ -19,13 +19,17 @@ class TodoInput extends Component {
   }
 
   componentDidUpdate(preProps, prevState) {
-    if (this.state.todoList.length > 0 && prevState.todoList.length < this.state.todoList.length && this.state.focusId !== null) {  
-      const focusTodo = this.state.todoList.find(dt => dt.id === this.state.focusId)
+      const { todoList, focusId } = this.state
+      const {todoList: preTodoList} = prevState
+    if (todoList.length > 0 && preTodoList.length < todoList.length && focusId !== null) {  
+      const focusTodo = todoList.find(dt => dt.id === focusId)
       focusTodo.ref.current?.focus()
     }
   }
 
   onCreateTodo(e) {
+    const { todoList } = this.state
+
     const todoInput = e.target.value
     this.setState({value: todoInput})
 
@@ -37,30 +41,37 @@ class TodoInput extends Component {
         unCompleted: true,
       }
 
-      this.setState({todoList: [...this.state.todoList, newTodoItem]})
+      this.setState({todoList: [...todoList, newTodoItem]})
       this.setState({focusId: newTodoItem.id})
       this.setState({value: ''})
     }
   }
 
   onDeleteInputItem = (id) => {
-    this.setState({todoList: this.state.todoList.filter(td => td.id !== id)})
+    const { todoList } = this.state
+
+    this.setState({todoList: todoList.filter(td => td.id !== id)})
   }
 
   onChangeTodoValue = (value, id) => {
-    const todoUpdate = this.state.todoList.find(item => item.id === id)
+    const { todoList } = this.state
+
+    const todoUpdate = todoList.find(item => item.id === id)
     todoUpdate.value = value
-    const newTodoList = [...this.state.todoList]
+    const newTodoList = [...todoList]
     this.setState({todoList: newTodoList})
   }
   
   onChangeTodoStatus = id => {
-    const itemChecked = this.state.todoList.find(td => td.id === id)
+    const { todoList } = this.state
+
+    const itemChecked = todoList.find(td => td.id === id)
     itemChecked.unCompleted = !itemChecked.unCompleted
-    this.setState({todoList: [...this.state.todoList]})
+    this.setState({todoList: [...todoList]})
   }
 
   onKeyDown = (e, index, unCompleted, id, value) => {
+    const { todoList } = this.state
 
     const onEnter = () => {
       const lastIdUncompleted = this.unCompletedList[this.unCompletedList.length - 1].id
@@ -75,17 +86,17 @@ class TodoInput extends Component {
           unCompleted,
         }
 
-        const indexItemEnter = this.state.todoList.findIndex(td => td.id === id)
+        const indexItemEnter = todoList.findIndex(td => td.id === id)
 
-        this.state.todoList.splice(indexItemEnter + 1, 0, newInput)
-        this.setState({todoList: this.state.todoList})
+        todoList.splice(indexItemEnter + 1, 0, newInput)
+        this.setState({todoList: todoList})
         this.setState({focusId: newInput.id})
       }
     }
 
     const onBackSpace = () => {
       if (index > 0) {
-        const itemDelete = this.state.todoList.find(td => td.id === id)
+        const itemDelete = todoList.find(td => td.id === id)
         const isCompletedItem = this.completedList.some(
           td => td.id === itemDelete.id,
         )
@@ -95,7 +106,7 @@ class TodoInput extends Component {
         const itemFocus =
           arrToFind[arrToFind.findIndex(item => item.id === itemDelete.id) - 1]
 
-        this.setState({todoList: this.state.todoList.filter(td => td.id !== id)})
+        this.setState({todoList: todoList.filter(td => td.id !== id)})
         e.preventDefault()
         itemFocus.ref.current.focus()
       }
@@ -131,8 +142,10 @@ class TodoInput extends Component {
   }
 
   render() {
-    this.unCompletedList =  this.state.todoList.filter(td => td.unCompleted)
-    this.completedList = this.state.todoList.filter(td => !td.unCompleted)
+    const { todoList } = this.state
+
+    this.unCompletedList =  todoList.filter(td => td.unCompleted)
+    this.completedList = todoList.filter(td => !td.unCompleted)
     return (
       <div className="container">
         <div className="todo-container">

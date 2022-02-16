@@ -1,0 +1,31 @@
+@import 'assets/scss';
+
+.user-detail {
+  @include flex(row, center, center);
+
+  .product-list {
+    background: pink;
+    flex: 1;
+    height: 100vw;
+  }
+
+  .user-activity {
+    background: rgb(243, 243, 108);
+    flex: 1;
+    height: 100vw;
+
+    .friend {
+      @include flex(column, center, center);
+      width: 200px;
+      height: 200px;
+      background: white;
+
+      .avatar {
+        text-align: center;
+        width: 150px;
+        height: 150px;
+        background: purple;
+      }
+    }
+  }
+}
